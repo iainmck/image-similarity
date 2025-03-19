@@ -11,7 +11,7 @@ parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
 from utils.image import resize_image
-from providers.supabase import get_supabase, Supabase, save_image_to_supabase
+from providers.supabase import save_image_to_supabase
 
 BUCKET_NAME = "embedded-images"
 BUCKET_FOLDER_NAME = "v1"
@@ -46,8 +46,6 @@ async def upload_file(filepath: str, filetype: str):
 async def main():
     global num_errors
 
-    supabase = await get_supabase()
-
     images_dir = "../images"
     
     # Get all files in the images directory and create upload queue
@@ -74,7 +72,7 @@ async def main():
     batch_size = 10
     for i in tqdm(range(0, len(upload_queue), batch_size)):
         batch = upload_queue[i:i+batch_size]
-        await asyncio.gather(*[upload_file(supabase, item.filepath, item.filetype) for item in batch])
+        await asyncio.gather(*[upload_file(item.filepath, item.filetype) for item in batch])
 
         if num_errors > 10:
             print(f"Too many errors, stopping upload.")

@@ -15,7 +15,7 @@ async def get_supabase() -> Supabase:
   return supabase
 
 async def save_image_to_supabase(image: Image.Image, filename: str, filetype: str, bucket_name: str, bucket_folder_name: str) -> str:
-    global supabase
+    supabase = await get_supabase()
 
     buffer = BytesIO()
     format_type = filetype.split("/")[-1].upper()
