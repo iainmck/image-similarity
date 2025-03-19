@@ -1,0 +1,13 @@
+name: server
+channels:
+  - defaults
+dependencies:
+  - pip:  # Same as requirements.txt
+    - cohere
+    - fastapi
+    - fastapi_utils # Lets FastAPI run background tasks
+    - httpx
+    - pillow
+    - supabase
+    - tqdm
+    - uvicorn[standard]

@@ -1,0 +1,9 @@
+# ADD ANY NEW PACKAGES TO deployment/environment.yaml AS WELL!
+cohere
+fastapi
+fastapi_utils # Lets FastAPI run background tasks
+httpx
+pillow
+supabase
+tqdm
+uvicorn[standard]
