@@ -4,13 +4,13 @@
 
 VERSION=1.00
 
-docker build --platform linux/amd64 -f ./deployment/Dockerfile -t us-central1-docker.pkg.dev/wander-mvp-362322/fastapi-server/server:v${VERSION} .
-docker push us-central1-docker.pkg.dev/wander-mvp-362322/fastapi-server/server:v${VERSION}
+docker build --platform linux/amd64 -f ./deployment/Dockerfile -t us-central1-docker.pkg.dev/alma-454302/servers/image-similarity:v${VERSION} .
+docker push us-central1-docker.pkg.dev/alma-454302/servers/image-similarity:v${VERSION}
 
 ## Tweak CPU & memory through looking at actual usage in GCP dashboard
 
-gcloud run deploy server \
---image=us-central1-docker.pkg.dev/wander-mvp-362322/fastapi-server/server:v${VERSION} \
+gcloud run deploy image-similarity \
+--image=us-central1-docker.pkg.dev/alma-454302/servers/image-similarity:v${VERSION} \
 --port=5000 \
 --allow-unauthenticated \
 --concurrency=50 \
@@ -19,5 +19,5 @@ gcloud run deploy server \
 --cpu=1 \
 --memory=1Gi \
 --region=us-central1 \
---project=wander-mvp-362322
+--project=alma-454302
 #--no-cpu-throttling

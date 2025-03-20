@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
 import { Loader, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { optimizeImage } from "@/utils/image";
 import { PercentBadge } from "@/components/PercentBadge";
@@ -11,7 +11,12 @@ import { PercentBadge } from "@/components/PercentBadge";
 export default function DropzonePage() {
   const [status, setStatus] = useState<"ready" | "uploading" | "searching" | "done" | "error">("ready");
   const [preview, setPreview] = useState<string | null>(null); // base64 image
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SimilarityResult[]>([]);
+
+  // Ping server to warm it up
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/health`);
+  }, []);
 
   const handleDrop = async (acceptedFiles: File[]) => {
     setResults([]);
@@ -50,8 +55,6 @@ export default function DropzonePage() {
         }
       );
 
-      console.log(response);
-
       if (!response.ok) {
         alert("Upload issue");
         setStatus("error");
@@ -67,6 +70,12 @@ export default function DropzonePage() {
     }
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
   return (
     <div className="relative flex-1 flex flex-col justify-center items-center w-full h-full p-8">
 
@@ -75,7 +84,7 @@ export default function DropzonePage() {
       <Dropzone onDrop={handleDrop} isGenerating={status === "uploading" || status === "searching"} preview={preview} />
 
       <div className="absolute bottom-0 flex flex-row gap-1 justify-center items-center">
-        {results.slice(0, window.innerWidth < 768 ? 3 : 5).map((result) =>
+        {results.slice(0, isMobile ? 3 : 5).map((result) =>
           <div key={result.filename} className="relative">
             <Image 
               src={result.image_url} 
@@ -157,4 +166,10 @@ function Dropzone(props: {
     )}
   </div>
   );
+}
+
+interface SimilarityResult {
+  filename: string;
+  image_url: string;
+  similarity: number;
 }

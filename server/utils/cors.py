@@ -12,7 +12,9 @@ def allow_CORS(app: FastAPI):
         allow_origin_regex=
             'http:\/\/localhost:3000'
             + '|' + 'https:\/\/localhost:3000'
-            + '|' + 'https:\/\/10\.0\.0\..*:3000',
+            + '|' + 'https:\/\/10\.0\.0\..*:3000'
+            + '|' + 'https:\/\/alma-image-similarity.*\.vercel\.app'
+            ,
         allow_methods=['GET', 'POST'], 
         allow_headers=['*'],
     )

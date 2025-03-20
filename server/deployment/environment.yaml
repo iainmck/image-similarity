@@ -2,6 +2,7 @@ name: server
 channels:
   - defaults
 dependencies:
+  - pip
   - pip:  # Same as requirements.txt
     - cohere
     - fastapi

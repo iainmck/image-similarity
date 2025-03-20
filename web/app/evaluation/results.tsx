@@ -65,7 +65,7 @@ export function EvaluationPageResults(props: { model: string | null, highThresho
 
   // Refactor data structure for UI, adding flags
   function processDataForUI(data: EvaluationData[]): EvaluationData[] {
-    let MED: MetaEvaluationData = {
+    const MED: MetaEvaluationData = {
       numUnexpectedStrongMatches: 0,
       totalStrongMatches: 0,
       numMissingStrongMatches: 0,
