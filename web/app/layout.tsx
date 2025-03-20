@@ -27,11 +27,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Theme appearance="light" accentColor="green">
-          <div className="flex min-h-screen">
+          <div className="flex flex-row h-screen w-screen">
             <Sidebar />
             
             {/* Main Content */}
-            <div className="flex-1 p-8">
+            <div className="flex-grow p-8 h-full overflow-x-hidden">
               {children}
             </div>
           </div>

@@ -1,10 +1,6 @@
 import asyncio
 import sys, os
-import mimetypes
-import dataclasses
 from tqdm import tqdm
-from PIL import Image
-from io import BytesIO
 
 # Before local imports, add parent dir to path
 current_dir = os.path.dirname(os.path.abspath(__file__))

@@ -39,6 +39,14 @@ The table to store embeddings, create an index, and create the lookup function i
 Finally, [this script](server/_scripts/seed_embedding_table.py) embedded all the seed images and stored outputs in the table. 
 
 
-## Web evaluation dashboard
+## Web dashboard
+
+(get link from iain)
+
+Simple playground to drop in images and see matches. 
+
+Open on desktop to view evaluation results from systematic testing of different embedding pipelines.
 
 ## iOS app
+
+This image similarity search was added to the iOS app inside the [label-finder repo](https://github.com/iainmck/label-finder).
