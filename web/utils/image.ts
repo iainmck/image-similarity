@@ -4,11 +4,23 @@ export async function optimizeImage(
   file: File,
   debug: boolean = false,
 ): Promise<string | null> {
+  let width = 244;
+  let height = 244;
+
+  const dimensions = await getImageDimensions(file);
+  if (dimensions) {
+    if (dimensions.width > dimensions.height) {
+      width *= dimensions.width / dimensions.height;
+    } else {
+      height *= dimensions.height / dimensions.width;
+    }
+  }
+
   return new Promise((resolve, reject) => {
     const options: Compressor.Options = {
       quality: 0.8,
-      minWidth: 244,
-      minHeight: 244,
+      width,
+      height,
       resize: "contain",
       checkOrientation: true,
       convertSize: 1 * 1000, // 1KB
@@ -40,5 +52,29 @@ export async function optimizeImage(
     };
 
     new Compressor(file, options);
+  });
+}
+
+function getImageDimensions(file: File): Promise<{ width: number; height: number } | null> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    
+    img.onload = () => {
+      const dimensions = {
+        width: img.naturalWidth,
+        height: img.naturalHeight
+      };
+      URL.revokeObjectURL(url);
+      resolve(dimensions);
+    };
+    
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      console.error('Failed to load image dimensions');
+      resolve(null);
+    };
+    
+    img.src = url;
   });
 }
