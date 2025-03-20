@@ -38,34 +38,30 @@ async def find_similar(params: FindSimilarParams):
 
     supabase = await get_supabase()
 
-    results = await asyncio.gather(
-        # Do similarity search on vector db
-        supabase.rpc(SEARCH_FUNCTION, {
-            "query_embedding": embedding.vector,
-            "match_threshold": 0, # 1 to -1, where 1 is most similar and -1 is most dissimilar
-            "match_count": 10,
-            "user_id_filter": None,  # for prod
-        }).execute(),
-
-        # Simultaneously save embedding to supabase (move this to post-response background task in prod)
-        supabase.table(EMBEDDING_TABLE).insert({
-            "filename": image_url.split("/")[-1],
-            "image_url": image_url,
-            "embedding": embedding.vector,
-        }).execute()
-    )
-
-    matches: list[dict] = results[0].data
+    result = await supabase.rpc(SEARCH_FUNCTION, {
+        "query_embedding": embedding.vector,
+        "match_threshold": 0, # 1 to -1, where 1 is most similar and -1 is most dissimilar
+        "match_count": 10,
+        "user_id_filter": None,  # for prod
+    }).execute()
+    
     matches = [{ 
         "id": match["vector_record"]["id"],
         "filename": match["vector_record"]["filename"],
         "image_url": match["vector_record"]["image_url"],
         "similarity": 1.0 - match["distance"]
-    } for match in matches ]
+    } for match in result.data ]
 
-    # Remove the input image from the list, if it made it into the results
-    if len(matches) > 0 and matches[0]["image_url"] == image_url:
+    # Remove the input image from the matches, if it has been previously uploaded
+    if len(matches) > 0 and matches[0]["similarity"] == 1.0:
         matches.pop(0)
+    else:
+        # Save embedding to supabase (move this to post-response background task in prod)
+        await supabase.table(EMBEDDING_TABLE).insert({
+            "filename": image_url.split("/")[-1],
+            "image_url": image_url,
+            "embedding": embedding.vector,
+        }).execute()
 
     return { "matches": matches }
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Badge, Tooltip } from "@radix-ui/themes";
 import Image from "next/image";
+import { PercentBadge } from "@/components/PercentBadge";
 
 const NO_IMAGE_URL = "https://ps.w.org/replace-broken-images/assets/icon-256x256.png?rev=2561727";
 
@@ -39,14 +40,12 @@ export function EvaluationImage(props: {
       )}
 
       {props.percent && props.highThreshold && props.lowThreshold && (
-        <Badge 
-          size="1" 
-          color={props.percent >= props.highThreshold ? 'jade' : props.percent >= props.lowThreshold ? 'bronze' : 'gray'} 
-          variant="solid" 
+        <PercentBadge 
+          percent={props.percent} 
+          highThreshold={props.highThreshold} 
+          lowThreshold={props.lowThreshold} 
           className="absolute top-0 left-0 scale-75 opacity-90"
-        >
-          {`${Math.round(props.percent * 100)}%`}
-        </Badge>
+        />
       )}
 
       {props.warning && (
